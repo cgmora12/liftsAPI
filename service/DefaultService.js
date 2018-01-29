@@ -55,10 +55,15 @@ exports.getStations = function() {
     } ];*/
     console.log('starting getStations');
 
-    if (fs.existsSync('./tfl-lu-station-accessibility-lifts.xls')) {
+    if (fs.existsSync('./prueba.xls')) {
       console.log('file exists');
-      toJson.xls(('./tfl-lu-station-accessibility-lifts.xls'), function(error, result){
-        console.log(result);
+      toJson.xls(('./prueba.xls'), function(error, result){
+        console.log(typeof result);
+        var jsonString = JSON.stringify(result.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2": '));
+        var sheet = JSON.parse(jsonString);
+        console.log(typeof 1);
+        console.log(typeof "1");
+        console.log(typeof sheet);
         //examples['application/json'] = result;
         examples['application/json'] = [ {
           "lifts_number" : 1,
