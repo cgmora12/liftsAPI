@@ -46,50 +46,49 @@ exports.getLiftsByStationName = function(name) {
 exports.getStations = function() {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    /*examples['application/json'] = [ {
-      "lifts_number" : 0,
-      "name" : "Westminster"
-    }, {
-      "lifts_number" : 0,
-      "name" : "Westminster"
-    } ];*/
     console.log('starting getStations');
 
     if (fs.existsSync('./prueba.xls')) {
       console.log('file exists');
+      
+      // From xls to json
       toJson.xls(('./prueba.xls'), function(error, result){
         try {
-          //console.log(result);
+          console.log("JSON (string) inicial: " + result);
+          
+          //Parsing json malformed to correct json
           result = "{" + result.substring(result.indexOf("Sheets:"), result.indexOf("'!range'")-10) + " } } }";
+
           var objKeysRegex = /({|,)(?:\s*)(?:')?([A-Za-z_$\.][A-Za-z0-9_ \-\.$]*)(?:')?(?:\s*):/g;
           var newQuotedKeysString = result.replace(objKeysRegex, "$1 \"$2\":");
           var objValuesRegex = /:(?:\s*)?([A-Za-z0-9_\-\.$]*)(?:\s*)(]|}|,)/g;
           var newQuotedValuesString = newQuotedKeysString.replace(objValuesRegex, ": \"$1\"$2");
           var resultJsonString = newQuotedValuesString.replace(/'/g, "\"");
-          //console.log(resultJsonString);
+
+          console.log("JSON (objeto) creado: " + resultJsonString);
           var jsonObj = JSON.parse(resultJsonString);
           var sheet = jsonObj.Sheets.Stations;
           console.log(sheet.A3.v);
-          //console.log(typeof sheet);
+
+          examples['application/json'] = sheet;
         } catch (err) {
-            // handle the error safely
             console.log(err)
         }
-        //examples['application/json'] = result;
-        examples['application/json'] = 
+        /*examples['application/json'] = 
           [ {
             "lifts_number" : 1,
             "name" : "Westminster"
           }, {
             "lifts_number" : 2,
             "name" : "Victoria"
-          } ];
+          } ];*/
         if (Object.keys(examples).length > 0) {
           resolve(examples[Object.keys(examples)[0]]);
         } else {
           resolve();
         }
       });
+
     }
   });
 }
