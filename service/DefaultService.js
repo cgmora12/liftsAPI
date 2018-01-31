@@ -58,20 +58,32 @@ exports.getStations = function() {
     if (fs.existsSync('./prueba.xls')) {
       console.log('file exists');
       toJson.xls(('./prueba.xls'), function(error, result){
-        console.log(typeof result);
-        var jsonString = JSON.stringify(result.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2": '));
-        var sheet = JSON.parse(jsonString);
-        console.log(typeof 1);
-        console.log(typeof "1");
-        console.log(typeof sheet);
+        try {
+          //console.log(result);
+          result = "{" + result.substring(result.indexOf("Sheets:"), result.indexOf("'!range'")-10) + " } } }";
+          var objKeysRegex = /({|,)(?:\s*)(?:')?([A-Za-z_$\.][A-Za-z0-9_ \-\.$]*)(?:')?(?:\s*):/g;
+          var newQuotedKeysString = result.replace(objKeysRegex, "$1 \"$2\":");
+          var objValuesRegex = /:(?:\s*)?([A-Za-z0-9_\-\.$]*)(?:\s*)(]|}|,)/g;
+          var newQuotedValuesString = newQuotedKeysString.replace(objValuesRegex, ": \"$1\"$2");
+          var resultJsonString = newQuotedValuesString.replace(/'/g, "\"");
+          //console.log(resultJsonString);
+          var jsonObj = JSON.parse(resultJsonString);
+          var sheet = jsonObj.Sheets.Stations;
+          console.log(sheet.A3.v);
+          //console.log(typeof sheet);
+        } catch (err) {
+            // handle the error safely
+            console.log(err)
+        }
         //examples['application/json'] = result;
-        examples['application/json'] = [ {
-          "lifts_number" : 1,
-          "name" : "Westminster"
-        }, {
-          "lifts_number" : 2,
-          "name" : "Victoria"
-        } ];
+        examples['application/json'] = 
+          [ {
+            "lifts_number" : 1,
+            "name" : "Westminster"
+          }, {
+            "lifts_number" : 2,
+            "name" : "Victoria"
+          } ];
         if (Object.keys(examples).length > 0) {
           resolve(examples[Object.keys(examples)[0]]);
         } else {
