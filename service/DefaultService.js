@@ -11,28 +11,45 @@ var fs = require('fs');
 exports.getLiftsByStationName = function(name) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    if(name == 'Westminster'){
-      examples['application/json'] = [ {
-        "clear_marked" : true,
-        "working" : true,
-        "direction" : "Up"
-      } ];
-    } else if (name == 'Victoria'){
-      examples['application/json'] = [ {
-        "clear_marked" : true,
-        "working" : true,
-        "direction" : "Up"
-      }, {
-        "clear_marked" : true,
-        "working" : false,
-        "direction" : "Down"
-      } ];
+    var fileName = "./prueba.csv";
+
+    if (fs.existsSync(fileName)) {
+      console.log('file exists');
+
+      // From csv to json
+      toJson.csv(fileName, function(error, result){
+        try{
+          // Creating json object
+          result = "{ \"csv\": " + JSON.stringify(result) + " }";
+          var jsonObj = JSON.parse(result);
+          console.log(jsonObj);
+
+          var jsonResult = new Object();
+          jsonResult.csv = [];
+          var station_number = 0;
+
+          // Filtering results
+          for(var i in jsonObj.csv){
+            if(jsonObj.csv[i][0] === name){
+              jsonResult.csv[station_number] = jsonObj.csv[i];
+              station_number++;
+            }
+          }
+
+          console.log(jsonResult);
+          examples['application/json'] = jsonResult;
+        } catch (err) {
+            console.log(err);
+        }
+
+        if (Object.keys(examples).length > 0) {
+          resolve(examples[Object.keys(examples)[0]]);
+        } else {
+          resolve();
+        }
+      });
     }
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+
   });
 }
 
@@ -46,13 +63,32 @@ exports.getLiftsByStationName = function(name) {
 exports.getStations = function() {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    console.log('starting getStations');
+    var fileName = "./prueba.csv";
 
-    if (fs.existsSync('./prueba.xls')) {
+    if (fs.existsSync(fileName)) {
       console.log('file exists');
+
+      // From csv to json
+      toJson.csv(fileName, function(error, result){
+        try{
+          // Creating json object
+          result = "{ \"csv\": " + JSON.stringify(result) + " }";
+          var jsonObj = JSON.parse(result);
+          console.log(jsonObj);
+          examples['application/json'] = jsonObj;
+        } catch (err) {
+            console.log(err);
+        }
+
+        if (Object.keys(examples).length > 0) {
+          resolve(examples[Object.keys(examples)[0]]);
+        } else {
+          resolve();
+        }
+      });
       
       // From xls to json
-      toJson.xls(('./prueba.xls'), function(error, result){
+      /*toJson.xls(('./prueba.xls'), function(error, result){
         try {
           console.log("JSON (string) inicial: " + result);
           
@@ -72,22 +108,23 @@ exports.getStations = function() {
 
           examples['application/json'] = sheet;
         } catch (err) {
-            console.log(err)
+            console.log(err);
         }
-        /*examples['application/json'] = 
-          [ {
-            "lifts_number" : 1,
-            "name" : "Westminster"
-          }, {
-            "lifts_number" : 2,
-            "name" : "Victoria"
-          } ];*/
         if (Object.keys(examples).length > 0) {
           resolve(examples[Object.keys(examples)[0]]);
         } else {
           resolve();
         }
-      });
+      });*/
+
+      /*examples['application/json'] = 
+        [ {
+          "lifts_number" : 1,
+          "name" : "Westminster"
+        }, {
+          "lifts_number" : 2,
+          "name" : "Victoria"
+        } ];*/
 
     }
   });
