@@ -11,13 +11,46 @@ var fs = require('fs');
 exports.getLiftsByStationName = function(name) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    var fileName = "./prueba.csv";
+    var fileName = "./prueba.xml";
 
     if (fs.existsSync(fileName)) {
       console.log('file exists');
 
+      // From xml to json
+      toJson.xml(fileName, function(error, result){
+        try{
+          // Creating json object
+          //console.log(result);
+          result = "{ \"json\": " + JSON.stringify(result) + "}";
+          var jsonObj = JSON.parse(result);
+          console.log(jsonObj);
+
+          var jsonResult = new Object();
+          jsonResult.json = [];
+          var station_number = 0;
+
+          // Filtering results
+          for(var i in jsonObj.json.Stations.Station){
+            if(jsonObj.json.Stations.Station[i].StationName[0] === name){
+              jsonResult.json[station_number] = jsonObj.json.Stations.Station[i];
+              station_number++;
+            }
+          }
+
+          examples['application/json'] = jsonResult.json;
+        } catch (err) {
+            console.log(err);
+        }
+
+        if (Object.keys(examples).length > 0) {
+          resolve(examples[Object.keys(examples)[0]]);
+        } else {
+          resolve();
+        }
+      });
+
       // From csv to json
-      toJson.csv(fileName, function(error, result){
+      /*toJson.csv(fileName, function(error, result){
         try{
           // Creating json object
           result = "{ \"csv\": " + JSON.stringify(result) + " }";
@@ -47,7 +80,7 @@ exports.getLiftsByStationName = function(name) {
         } else {
           resolve();
         }
-      });
+      });*/
     }
 
   });
@@ -63,13 +96,33 @@ exports.getLiftsByStationName = function(name) {
 exports.getStations = function() {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    var fileName = "./prueba.csv";
+    var fileName = "./prueba.xml";
 
     if (fs.existsSync(fileName)) {
       console.log('file exists');
 
+      // From xml to json
+      toJson.xml(fileName, function(error, result){
+        try{
+          // Creating json object
+          //console.log(result);
+          result = "{ \"json\": " + JSON.stringify(result) + "}";
+          var jsonObj = JSON.parse(result);
+          console.log(jsonObj);
+          examples['application/json'] = jsonObj.json.Stations.Station;
+        } catch (err) {
+            console.log(err);
+        }
+
+        if (Object.keys(examples).length > 0) {
+          resolve(examples[Object.keys(examples)[0]]);
+        } else {
+          resolve();
+        }
+      });
+
       // From csv to json
-      toJson.csv(fileName, function(error, result){
+      /*toJson.csv(fileName, function(error, result){
         try{
           // Creating json object
           result = "{ \"csv\": " + JSON.stringify(result) + " }";
@@ -85,7 +138,7 @@ exports.getStations = function() {
         } else {
           resolve();
         }
-      });
+      });*/
       
       // From xls to json
       /*toJson.xls(('./prueba.xls'), function(error, result){
