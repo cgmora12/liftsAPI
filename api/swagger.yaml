@@ -12,31 +12,25 @@ paths:
   /stations:
     get:
       summary: "Finds all stations with lifts"
-      description: "Return all station names"
+      description: "Return all station and their lifts"
       operationId: "getStations"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Station"
-      x-swagger-router-controller: "Default"
-  /stations/{name}:
-    get:
-      summary: "Find lifts by station name"
-      description: "Returns the lifts found in a station"
-      operationId: "getLiftsByStationName"
       produces:
       - "application/json"
       parameters:
       - name: "name"
-        in: "path"
+        in: "query"
         description: "Name of the station where it is"
-        required: true
+        required: false
+        type: "string"
+      - name: "lift"
+        in: "query"
+        description: "Name of the lift"
+        required: false
+        type: "string"
+      - name: "lift_direction"
+        in: "query"
+        description: "Direction of the lift"
+        required: false
         type: "string"
       responses:
         200:
@@ -44,11 +38,7 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/Lift"
-        400:
-          description: "Invalid station name supplied"
-        404:
-          description: "Lifts not found"
+              $ref: "#/definitions/Station"
       x-swagger-router-controller: "Default"
 definitions:
   Station:
@@ -59,31 +49,11 @@ definitions:
       name:
         type: "string"
         example: "Westminster"
-      lifts_number:
-        type: "integer"
-        format: "int64"
-    example:
-      lifts_number: 0
-      name: "Westminster"
+      lift:
+        type: "string"
+        example: "Lift Down"
+      lift_direction:
+        type: "string"
+        example: "Down"
     xml:
       name: "Station"
-  Lift:
-    type: "object"
-    required:
-    - "clear_marked"
-    - "direction"
-    - "working"
-    properties:
-      direction:
-        type: "string"
-        example: "Up"
-      clear_marked:
-        type: "boolean"
-      working:
-        type: "boolean"
-    example:
-      clear_marked: true
-      working: true
-      direction: "Up"
-    xml:
-      name: "Lift"
