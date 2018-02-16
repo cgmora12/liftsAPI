@@ -21,66 +21,40 @@ exports.getStations = function(args, res, next) {
         // Creating json object
         result = "{ \"csv\": " + JSON.stringify(result) + " }";
         var jsonObj = JSON.parse(result);
-        console.log(jsonObj);
-
         var jsonResult = new Object();
         jsonResult.csv = [];
-        var station_number = 0;
-
-        /*console.log(JSON.stringify(args));
-        console.log(args["name"].value);
-        console.log(args["lift"].value);
-        console.log(args["lift_direction"].value);*/
-
-        var nameFilter = false;
-        var liftFilter = false;
-        var lift_directionFilter = false;
+        console.log(jsonObj);
+        //console.log(JSON.stringify(args));
 
         // Filtering results
-        if(args["name"].value == undefined && args["lift"].value == undefined && args["lift_direction"].value == undefined){
-          jsonResult.csv = jsonObj.csv;
-        } else {
-          if(args["name"].value != undefined){
-            if(jsonResult.csv.length > 0 || nameFilter || liftFilter || lift_directionFilter){
-              jsonObj.csv = jsonResult.csv;
-              jsonResult.csv = [];
-              station_number = 0;
-            }
-            nameFilter = true;
-            for(var i in jsonObj.csv){
-              if(jsonObj.csv[i][0] === args["name"].value){
-                jsonResult.csv[station_number] = jsonObj.csv[i];
-                station_number++;
-              }
-            }
-          } 
-          if(args["lift"].value != undefined){
-            if(jsonResult.csv.length > 0 || nameFilter || liftFilter || lift_directionFilter){
-              jsonObj.csv = jsonResult.csv;
-              jsonResult.csv = [];
-              station_number = 0;
-            }
-            liftFilter = true;
-            for(var i in jsonObj.csv){
-              if(jsonObj.csv[i][1] === args["lift"].value){
-                jsonResult.csv[station_number] = jsonObj.csv[i];
-                station_number++;
-              }
-            }
+        var argsUndefined = true;
+        var filters = false;
+        var object_number = 0;
+
+        for(var i = 0; i < Object.keys(args).length; i++){
+          if(args[Object.keys(args)[i]].value != undefined){
+            argsUndefined = false;
           }
-          if(args["lift_direction"].value != undefined){
-            if(jsonResult.csv.length > 0 || nameFilter || liftFilter || lift_directionFilter){
-              jsonObj.csv = jsonResult.csv;
-              jsonResult.csv = [];
-              station_number = 0;
-            }
-            lift_directionFilter = true;
-            for(var i in jsonObj.csv){
-              if(jsonObj.csv[i][2] === args["lift_direction"].value){
-                jsonResult.csv[station_number] = jsonObj.csv[i];
-                station_number++;
+        }
+        if(argsUndefined){
+          jsonResult.csv = jsonObj.csv;
+        }
+        else {
+          for(var j = 0; j < Object.keys(args).length; j++){
+            if(args[Object.keys(args)[j]].value != undefined){
+              if(jsonResult.csv.length > 0 || filters){
+                jsonObj.csv = jsonResult.csv;
+                jsonResult.csv = [];
+                object_number = 0;
               }
-            }
+              filters = true;
+              for(var i in jsonObj.csv){
+                if(jsonObj.csv[i][j] === args[Object.keys(args)[j]].value){
+                  jsonResult.csv[object_number] = jsonObj.csv[i];
+                  object_number++;
+                }
+              }
+            } 
           }
         }
 
@@ -108,19 +82,6 @@ exports.getStations = function(args, res, next) {
   else {
         res.end();
   }
-  /*var examples = {};
-    examples['application/json'] = [ {
-    "lift_direction" : "Down",
-    "name" : "Westminster",
-    "lift" : "Lift Down"
-  } ];
-  if(Object.keys(examples).length > 0) {
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
-  }
-  else {
-    res.end();
-  }*/
   
 }
 
