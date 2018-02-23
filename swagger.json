@@ -1,0 +1,71 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "1.0.0",
+    "title" : "London Underground Lifts",
+    "description" : "Obtaining the London Underground stations with lifts"
+  },
+  "host" : "virtserver.swaggerhub.com",
+  "basePath" : "/cgmora12/lifts/1.0.0",
+  "paths" : {
+    "/stations" : {
+      "get" : {
+        "summary" : "Finds all stations with lifts",
+        "description" : "Return all station and their lifts",
+        "operationId" : "getStations",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "name",
+          "type" : "string",
+          "description" : "Name of the station where it is"
+        }, {
+          "in" : "query",
+          "name" : "lift",
+          "type" : "string",
+          "description" : "Name of the lift"
+        }, {
+          "in" : "query",
+          "name" : "lift_direction",
+          "type" : "string",
+          "description" : "Direction of the lift"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Station"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Station" : {
+      "type" : "object",
+      "required" : [ "name" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "example" : "Westminster"
+        },
+        "lift" : {
+          "type" : "string",
+          "example" : "Lift Down"
+        },
+        "lift_direction" : {
+          "type" : "string",
+          "example" : "Down"
+        }
+      },
+      "xml" : {
+        "name" : "Station"
+      }
+    }
+  },
+  "schemes" : [ "https" ]
+}
