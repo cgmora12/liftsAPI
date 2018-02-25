@@ -9,27 +9,26 @@ basePath: "/cgmora12/lifts/1.0.0"
 schemes:
 - "https"
 paths:
-  /stations:
+  /:
     get:
-      summary: "Finds all stations with lifts"
-      description: "Return all station and their lifts"
-      operationId: "getStations"
+      summary: "Finds london underground lifts"
+      operationId: "getLondonUndergrounLifts"
       produces:
       - "application/json"
       parameters:
-      - name: "name"
+      - name: "station_name"
         in: "query"
-        description: "Name of the station where it is"
+        description: "Name of the station"
         required: false
         type: "string"
       - name: "lift"
         in: "query"
-        description: "Name of the lift"
+        description: "Name of lift"
         required: false
         type: "string"
       - name: "lift_direction"
         in: "query"
-        description: "Direction of the lift"
+        description: "Direction of lift"
         required: false
         type: "string"
       responses:
@@ -44,9 +43,9 @@ definitions:
   Station:
     type: "object"
     required:
-    - "name"
+    - "station_name"
     properties:
-      name:
+      station_name:
         type: "string"
         example: "Westminster"
       lift:

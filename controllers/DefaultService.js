@@ -2,16 +2,16 @@
 var toJson = require('allto-json');
 var fs = require('fs');
 
-exports.getStations = function(args, res, next) {
+exports.getLondonUndergrounLifts = function(args, res, next) {
   /**
    * parameters expected in the args:
-  * name (String)
+  * station_name (String)
   * lift (String)
   * lift_direction (String)
   **/
 
   var examples = {};
-  var fileName = "./prueba.csv";
+  var fileName = "./London Underground Lifts.csv";
 
   if (fs.existsSync(fileName)) {
     console.log('file exists');

@@ -8,27 +8,26 @@
   "host" : "virtserver.swaggerhub.com",
   "basePath" : "/cgmora12/lifts/1.0.0",
   "paths" : {
-    "/stations" : {
+    "/" : {
       "get" : {
-        "summary" : "Finds all stations with lifts",
-        "description" : "Return all station and their lifts",
-        "operationId" : "getStations",
+        "summary" : "Finds london underground lifts",
+        "operationId" : "getLondonUndergrounLifts",
         "produces" : [ "application/json" ],
         "parameters" : [ {
           "in" : "query",
-          "name" : "name",
+          "name" : "station_name",
           "type" : "string",
-          "description" : "Name of the station where it is"
+          "description" : "Name of the station"
         }, {
           "in" : "query",
           "name" : "lift",
           "type" : "string",
-          "description" : "Name of the lift"
+          "description" : "Name of lift"
         }, {
           "in" : "query",
           "name" : "lift_direction",
           "type" : "string",
-          "description" : "Direction of the lift"
+          "description" : "Direction of lift"
         } ],
         "responses" : {
           "200" : {
@@ -47,9 +46,9 @@
   "definitions" : {
     "Station" : {
       "type" : "object",
-      "required" : [ "name" ],
+      "required" : [ "station_name" ],
       "properties" : {
-        "name" : {
+        "station_name" : {
           "type" : "string",
           "example" : "Westminster"
         },
